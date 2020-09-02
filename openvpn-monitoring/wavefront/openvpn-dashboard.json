@@ -1,0 +1,1366 @@
+{
+  "name": "VPN Summary",
+  "url": "VPN-Summary",
+  "eventFilterType": "BYCHART",
+  "displayDescription": false,
+  "displaySectionTableOfContents": true,
+  "displayQueryParameters": true,
+  "sections": [
+    {
+      "name": "Overview",
+      "rows": [
+        {
+          "charts": [
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "type": "markdown-widget",
+                "plainMarkdownContent": "|  |  |\n| --- | --- |\n| ![OpenVPN](https://github.com/lacework/ops/blob/master/openvpn-monitoring/icons/openvpn-logo-100x100.png?raw=true) | This overview shows concurrent users and connection time per user. As concurrent users reaches 80% of ${license}, the guage will turn red.\n",
+                "autoColumnTags": false,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "OpenVPN",
+              "anomalySampleSize": "8",
+              "units": "Units",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "dashboardLayout": {
+                  "x": 0,
+                  "y": 0,
+                  "w": 3,
+                  "h": 5
+                }
+              },
+              "sources": [
+                {
+                  "name": "A",
+                  "query": "",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "scatterPlotSource": "Y",
+                  "querybuilderSerialization": "{\"_v\":1,\"filters\":[[],\"and\"],\"functions\":[],\"metric\":\"ts(undefined)\"}",
+                  "querybuilderEnabled": true,
+                  "sourceDescription": ""
+                }
+              ],
+              "noDefaultEvents": false,
+              "anomalyType": "both"
+            },
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "fixedLegendFilterLimit": 5,
+                "max": 50,
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "lineType": "linear",
+                "windowing": "full",
+                "fixedLegendFilterSort": "TOP",
+                "y1Units": "",
+                "type": "gauge",
+                "y1UnitAutoscaling": false,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": false,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "sparklineDecimalPrecision": 0,
+                "autoColumnTags": false,
+                "numTags": 4,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "Current VPN Users",
+              "anomalySampleSize": "8",
+              "units": "",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "colorMap": {
+                  "colors": [
+                    "#86c042",
+                    "#EFC006",
+                    "#d9534f"
+                  ],
+                  "values": [
+                    39,
+                    45
+                  ]
+                },
+                "dashboardLayout": {
+                  "x": 3,
+                  "y": 0,
+                  "w": 3,
+                  "h": 5
+                }
+              },
+              "sources": [
+                {
+                  "name": "A",
+                  "query": "last(10m, ts(telegraf.vpn.summary.n.clients, source=${host}))",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                }
+              ],
+              "noDefaultEvents": false,
+              "anomalyType": "both"
+            },
+            {
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "fixedLegendFilterLimit": 5,
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "lineType": "linear",
+                "windowing": "full",
+                "fixedLegendFilterSort": "TOP",
+                "y1Units": "",
+                "sortValuesDescending": true,
+                "type": "top-k",
+                "y1UnitAutoscaling": false,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": true,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "autoColumnTags": false,
+                "numTags": 4,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "name": "Connection Duration",
+              "units": "s",
+              "summarization": "LAST",
+              "base": 0,
+              "chartAttributes": {
+                "decimalPrecision": 2,
+                "topK": {
+                  "labelBy": [
+                    "username"
+                  ],
+                  "valueHeader": "Time"
+                },
+                "colorMap": {
+                  "colors": [
+                    "#00b3ca",
+                    "#38a0f4",
+                    "#86c042"
+                  ],
+                  "values": [
+                    900,
+                    7200
+                  ]
+                },
+                "dashboardLayout": {
+                  "x": 6,
+                  "y": 0,
+                  "w": 6,
+                  "h": 10
+                }
+              },
+              "sources": [
+                {
+                  "name": "A",
+                  "query": "ts(\"telegraf.vpn.status.client.connected.duration\", source=${host})",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false
+                }
+              ],
+              "noDefaultEvents": false,
+              "description": "Total time connected, by user."
+            }
+          ],
+          "heightFactor": 130
+        },
+        {
+          "charts": [
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "stackType": "zero",
+                "fixedLegendFilterLimit": 5,
+                "max": 50,
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "lineType": "linear",
+                "windowing": "full",
+                "min": 0,
+                "fixedLegendFilterSort": "TOP",
+                "y1Units": "",
+                "type": "line",
+                "y1UnitAutoscaling": false,
+                "tagMode": "custom",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": false,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "sparklineDecimalPrecision": 0,
+                "autoColumnTags": false,
+                "numTags": 4,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "VPN Users Over Time",
+              "anomalySampleSize": "8",
+              "units": "vpn users",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "colorMap": {
+                  "colors": [
+                    "#86c042",
+                    "#EFC006",
+                    "#d9534f"
+                  ],
+                  "values": [
+                    39,
+                    45
+                  ]
+                },
+                "dashboardLayout": {
+                  "x": 0,
+                  "y": 5,
+                  "w": 6,
+                  "h": 5
+                }
+              },
+              "sources": [
+                {
+                  "name": "Current",
+                  "query": "ts(telegraf.vpn.summary.n.clients, source=vpn.corp.lacework.net)",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceColor": "rgba(56,160,244,1)"
+                },
+                {
+                  "name": "License Limit",
+                  "query": "${license}",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceColor": "rgba(217,83,79,1)"
+                },
+                {
+                  "name": "Alert Warning",
+                  "query": ".8 * ${License Limit}",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceColor": "rgba(255,163,28,1)"
+                },
+                {
+                  "name": "Alert Condition",
+                  "query": "${Current} > ${Alert Warning}",
+                  "disabled": true,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceColor": "rgba(217,83,79,1)"
+                }
+              ],
+              "noDefaultEvents": false,
+              "anomalyType": "both"
+            }
+          ],
+          "heightFactor": 100
+        }
+      ]
+    },
+    {
+      "name": "VPN Network Traffic",
+      "rows": [
+        {
+          "charts": [
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "type": "markdown-widget",
+                "plainMarkdownContent": "These charts break down traffic flow, both send and received, per user.\n\nTraffic metrics are in bytes/sec, converted to bps. \n\nThe stacked area charts show aggregate bandwidth while the topk charts help easily show top consumers.",
+                "autoColumnTags": false,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "Network Traffic",
+              "anomalySampleSize": "8",
+              "units": "Units",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "dashboardLayout": {
+                  "x": 0,
+                  "y": 0,
+                  "w": 2,
+                  "h": 10
+                }
+              },
+              "sources": [
+                {
+                  "name": "A",
+                  "query": "",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "scatterPlotSource": "Y",
+                  "querybuilderSerialization": "{\"_v\":1,\"filters\":[[],\"and\"],\"functions\":[],\"metric\":\"ts(undefined)\"}",
+                  "querybuilderEnabled": true,
+                  "sourceDescription": ""
+                }
+              ],
+              "noDefaultEvents": false,
+              "anomalyType": "both"
+            },
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "stackType": "zero",
+                "fixedLegendFilterLimit": 5,
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "lineType": "linear",
+                "windowing": "full",
+                "fixedLegendFilterSort": "TOP",
+                "y1Units": "",
+                "type": "stacked-area",
+                "y1UnitAutoscaling": false,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": true,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "autoColumnTags": false,
+                "numTags": 4,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "VPN Traffic Sent (bps)",
+              "anomalySampleSize": "8",
+              "units": "bps",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "dashboardLayout": {
+                  "x": 2,
+                  "y": 0,
+                  "w": 5,
+                  "h": 5
+                }
+              },
+              "sources": [
+                {
+                  "name": "Sent Bytes",
+                  "query": "rate(align(60s, ts(telegraf.vpn.status.client.bytes.sent)))",
+                  "disabled": true,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                },
+                {
+                  "name": "Sent Bits",
+                  "query": "${Sent Bytes} * 8",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                }
+              ],
+              "noDefaultEvents": false,
+              "anomalyType": "both"
+            },
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "stackType": "zero",
+                "fixedLegendFilterLimit": 5,
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "showRawValues": false,
+                "lineType": "linear",
+                "showHosts": true,
+                "groupBySource": false,
+                "windowing": "full",
+                "fixedLegendFilterSort": "TOP",
+                "y1Units": "",
+                "sortValuesDescending": true,
+                "type": "top-k",
+                "y1UnitAutoscaling": false,
+                "showLabels": true,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": true,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "autoColumnTags": false,
+                "numTags": 4,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "Top Senders (Sent)",
+              "anomalySampleSize": "8",
+              "units": "bps",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "decimalPrecision": 2,
+                "topK": {
+                  "labelBy": [
+                    "username"
+                  ],
+                  "valueHeader": "bandwidth"
+                },
+                "colorMap": {
+                  "colors": [
+                    "#00b3ca",
+                    "#38a0f4",
+                    "#5BA420"
+                  ],
+                  "values": [
+                    1024,
+                    2048
+                  ]
+                },
+                "dashboardLayout": {
+                  "x": 7,
+                  "y": 0,
+                  "w": 5,
+                  "h": 5
+                }
+              },
+              "sources": [
+                {
+                  "name": "Sent Bytes",
+                  "query": "rate(align(60s, ts(telegraf.vpn.status.client.bytes.sent)))",
+                  "disabled": true,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                },
+                {
+                  "name": "Sent Bits",
+                  "query": "${Sent Bytes} * 8",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                }
+              ],
+              "noDefaultEvents": false,
+              "anomalyType": "both"
+            }
+          ],
+          "heightFactor": 130
+        },
+        {
+          "charts": [
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "stackType": "zero",
+                "fixedLegendFilterLimit": 5,
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "lineType": "linear",
+                "windowing": "full",
+                "fixedLegendFilterSort": "TOP",
+                "y1Units": "",
+                "type": "stacked-area",
+                "y1UnitAutoscaling": false,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": true,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "autoColumnTags": false,
+                "numTags": 4,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "VPN Traffic Recv (bps)",
+              "anomalySampleSize": "8",
+              "units": "bps",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "dashboardLayout": {
+                  "x": 2,
+                  "y": 5,
+                  "w": 5,
+                  "h": 5
+                }
+              },
+              "sources": [
+                {
+                  "name": "Recv Bytes",
+                  "query": "rate(align(60s, ts(telegraf.vpn.status.client.bytes.recv)))",
+                  "disabled": true,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                },
+                {
+                  "name": "Recv Bits",
+                  "query": "${Recv Bytes} * 8",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                }
+              ],
+              "noDefaultEvents": false,
+              "anomalyType": "both"
+            },
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "stackType": "zero",
+                "fixedLegendFilterLimit": 5,
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "showRawValues": false,
+                "lineType": "linear",
+                "showHosts": true,
+                "groupBySource": false,
+                "windowing": "full",
+                "fixedLegendFilterSort": "TOP",
+                "y1Units": "",
+                "sortValuesDescending": true,
+                "type": "top-k",
+                "y1UnitAutoscaling": false,
+                "showLabels": true,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": true,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "autoColumnTags": false,
+                "numTags": 4,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "Top Senders (Recv)",
+              "anomalySampleSize": "8",
+              "units": "bps",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "decimalPrecision": 2,
+                "topK": {
+                  "labelBy": [
+                    "username"
+                  ],
+                  "valueHeader": "bandwidth"
+                },
+                "colorMap": {
+                  "colors": [
+                    "#00b3ca",
+                    "#38a0f4",
+                    "#5BA420"
+                  ],
+                  "values": [
+                    1024,
+                    2048
+                  ]
+                },
+                "dashboardLayout": {
+                  "x": 7,
+                  "y": 5,
+                  "w": 5,
+                  "h": 5
+                }
+              },
+              "sources": [
+                {
+                  "name": "Recv Bytes",
+                  "query": "rate(align(60s, ts(telegraf.vpn.status.client.bytes.recv)))",
+                  "disabled": true,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                },
+                {
+                  "name": "Recv Bits",
+                  "query": "${Recv Bytes} * 8",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                }
+              ],
+              "noDefaultEvents": false,
+              "anomalyType": "both"
+            }
+          ],
+          "heightFactor": 100
+        }
+      ]
+    },
+    {
+      "name": "VPN Server Summary",
+      "rows": [
+        {
+          "charts": [
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "type": "markdown-widget",
+                "plainMarkdownContent": "These charts are a high level overview of the OpenVPN host. These are basic host-level metrics from Telegraf. You can click on any of the blue charts to the right to jump to the Linux Telegraf Host metrics dashboard for a more detailed view of this host.",
+                "autoColumnTags": false,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "Host Summary",
+              "anomalySampleSize": "8",
+              "units": "Units",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "dashboardLayout": {
+                  "x": 0,
+                  "y": 0,
+                  "w": 3,
+                  "h": 5
+                },
+                "dashboardLinks": {
+                  "*": {
+                    "destination": "/dashboards/Linux-Telegraf-Host",
+                    "source": {
+                      "host": "source"
+                    }
+                  }
+                }
+              },
+              "sources": [
+                {
+                  "name": "A",
+                  "query": "",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "scatterPlotSource": "Y",
+                  "querybuilderSerialization": "{\"_v\":1,\"filters\":[[],\"and\"],\"functions\":[],\"metric\":\"ts(undefined)\"}",
+                  "querybuilderEnabled": true,
+                  "sourceDescription": ""
+                }
+              ],
+              "noDefaultEvents": false,
+              "anomalyType": "both"
+            },
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "COUNT",
+                "y0ScaleSIBy1024": false,
+                "sparklineDisplayFontSize": "100",
+                "stackType": "zero",
+                "fixedLegendFilterLimit": 5,
+                "timeBasedColoring": false,
+                "sparklineValueColorMapColors": [
+                  "rgba(54,130,201,1)",
+                  "rgba(255,224,61,1)",
+                  "rgba(242,101,34,1)"
+                ],
+                "fixedLegendPosition": "TOP",
+                "customTags": [],
+                "lineType": "linear",
+                "sparklineFillColor": "rgba(31,112,171,1)",
+                "sparklineValueColorMapApplyTo": "BACKGROUND",
+                "windowing": "full",
+                "sparklineDisplayColor": "rgba(255,255,255,1)",
+                "sparklineSize": "BACKGROUND",
+                "fixedLegendFilterSort": "BOTTOM",
+                "sparklineValueColorMapValuesV2": [
+                  99,
+                  100
+                ],
+                "y1Units": "",
+                "sparklineDisplayValueType": "VALUE",
+                "type": "sparkline",
+                "y1UnitAutoscaling": false,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": false,
+                "fixedLegendDisplayStats": [],
+                "sparklineDisplayHorizontalPosition": "MIDDLE",
+                "sparklineLineColor": "rgba(88,146,189,1)",
+                "sparklineDecimalPrecision": 1,
+                "autoColumnTags": false,
+                "numTags": 4
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "Total CPU Usage (non-idle)",
+              "anomalySampleSize": "8",
+              "units": "%",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "dashboardLinks": {
+                  "*": {
+                    "destination": "/dashboards/Linux-Telegraf-Host"
+                  }
+                },
+                "singleStat": {
+                  "sparklineDisplayLabel": "New Query",
+                  "sparklineDisplaySubLabel": "Total CPU Usage (non-idle)"
+                },
+                "dashboardLayout": {
+                  "x": 3,
+                  "y": 0,
+                  "w": 3,
+                  "h": 5
+                },
+                "y0ScaleDecimal": false
+              },
+              "sources": [
+                {
+                  "name": "New Query",
+                  "query": "100 - avg(ts(\"telegraf.cpu.usage.idle\", source=${host}))",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false
+                }
+              ],
+              "noDefaultEvents": false,
+              "description": "Total CPU Usage of Server",
+              "anomalyType": "both"
+            },
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "sparklineDisplayFontSize": "100",
+                "stackType": "zero",
+                "fixedLegendFilterLimit": 5,
+                "timeBasedColoring": false,
+                "sparklineValueColorMapColors": [
+                  "rgba(54,130,201,1)",
+                  "rgba(255,224,61,1)",
+                  "rgba(242,101,34,1)"
+                ],
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "lineType": "linear",
+                "sparklineFillColor": "rgba(31,112,171,1)",
+                "sparklineValueColorMapApplyTo": "BACKGROUND",
+                "windowing": "full",
+                "sparklineDisplayColor": "rgba(255,255,255,1)",
+                "sparklineSize": "BACKGROUND",
+                "fixedLegendFilterSort": "TOP",
+                "sparklineValueColorMapValuesV2": [
+                  90,
+                  100
+                ],
+                "y1Units": "",
+                "sparklineDisplayValueType": "VALUE",
+                "type": "sparkline",
+                "y1UnitAutoscaling": false,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": false,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "sparklineDisplayHorizontalPosition": "MIDDLE",
+                "sparklineLineColor": "rgba(88,146,189,1)",
+                "sparklineDecimalPrecision": 1,
+                "autoColumnTags": false,
+                "numTags": 4
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "Total Memory Usage",
+              "anomalySampleSize": "8",
+              "units": "%",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "dashboardLinks": {
+                  "*": {
+                    "destination": "/dashboards/Linux-Telegraf-Host"
+                  }
+                },
+                "singleStat": {
+                  "sparklineDisplayLabel": "used_percent",
+                  "sparklineDisplaySubLabel": "Total Memory Usage"
+                },
+                "dashboardLayout": {
+                  "x": 6,
+                  "y": 0,
+                  "w": 3,
+                  "h": 5
+                },
+                "y0ScaleDecimal": false
+              },
+              "sources": [
+                {
+                  "name": "used_percent",
+                  "query": "ts(\"telegraf.mem.used.percent\", source=\"${host}\")",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false
+                }
+              ],
+              "noDefaultEvents": false,
+              "description": "Total Memory Usage of Host",
+              "anomalyType": "both"
+            },
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "sparklineDisplayFontSize": "100",
+                "stackType": "zero",
+                "fixedLegendFilterLimit": 5,
+                "timeBasedColoring": false,
+                "sparklineValueColorMapColors": [
+                  "rgba(54,130,201,1)",
+                  "rgba(255,224,61,1)",
+                  "rgba(242,101,34,1)"
+                ],
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "lineType": "linear",
+                "sparklineFillColor": "rgba(31,112,171,1)",
+                "sparklineValueColorMapApplyTo": "BACKGROUND",
+                "windowing": "full",
+                "sparklineDisplayColor": "rgba(255,255,255,1)",
+                "sparklineSize": "BACKGROUND",
+                "fixedLegendFilterSort": "TOP",
+                "sparklineValueColorMapValuesV2": [
+                  99.9,
+                  100
+                ],
+                "y1Units": "",
+                "sparklineDisplayValueType": "VALUE",
+                "type": "sparkline",
+                "y1UnitAutoscaling": false,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": false,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "sparklineDisplayHorizontalPosition": "MIDDLE",
+                "sparklineLineColor": "rgba(88,146,189,1)",
+                "sparklineDecimalPrecision": 1,
+                "autoColumnTags": false,
+                "numTags": 4
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "Max Disk Usage",
+              "anomalySampleSize": "8",
+              "units": "%",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "dashboardLinks": {
+                  "*": {
+                    "destination": "/dashboards/Linux-Telegraf-Host"
+                  }
+                },
+                "singleStat": {
+                  "sparklineDisplayLabel": "New Query",
+                  "sparklineDisplaySubLabel": "Max Disk Usage"
+                },
+                "dashboardLayout": {
+                  "x": 9,
+                  "y": 0,
+                  "w": 3,
+                  "h": 5
+                },
+                "y0ScaleDecimal": false
+              },
+              "sources": [
+                {
+                  "name": "New Query",
+                  "query": "max(ts(\"telegraf.disk.used.percent\", source=\"${host}\" and not fstype=\"squashfs\"))",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false
+                }
+              ],
+              "noDefaultEvents": false,
+              "description": "Total Disk Used for Host",
+              "anomalyType": "both"
+            }
+          ],
+          "heightFactor": 100
+        },
+        {
+          "charts": [
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "sparklineDisplayFontSize": "100",
+                "fixedLegendFilterLimit": 5,
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "lineType": "linear",
+                "sparklineValueColorMapApplyTo": "TEXT",
+                "windowing": "full",
+                "sparklineSize": "BOTTOM",
+                "fixedLegendFilterSort": "TOP",
+                "y1Units": "",
+                "sparklineDisplayValueType": "VALUE",
+                "type": "sparkline",
+                "y1UnitAutoscaling": false,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": false,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "sparklineDisplayHorizontalPosition": "MIDDLE",
+                "sparklineDecimalPrecision": 0,
+                "autoColumnTags": false,
+                "numTags": 4,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "System Uptime",
+              "anomalySampleSize": "8",
+              "units": " Hours",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "singleStat": {
+                  "sparklineDisplayLabel": "Source",
+                  "sparklineDisplaySubLabel": "System Uptime"
+                },
+                "dashboardLayout": {
+                  "x": 0,
+                  "y": 5,
+                  "w": 3,
+                  "h": 5
+                },
+                "y0ScaleDecimal": false
+              },
+              "sources": [
+                {
+                  "name": "Source",
+                  "query": "ts(\"telegraf.system.uptime\", source=\"${host}\") / 3600",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                }
+              ],
+              "noDefaultEvents": false,
+              "anomalyType": "both"
+            },
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "fixedLegendFilterLimit": 5,
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "lineType": "linear",
+                "windowing": "full",
+                "fixedLegendFilterSort": "TOP",
+                "y1Units": "",
+                "type": "line",
+                "y1UnitAutoscaling": false,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": false,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "autoColumnTags": false,
+                "numTags": 4,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "Bytes Transferred",
+              "anomalySampleSize": "8",
+              "units": "Octets",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "dashboardLayout": {
+                  "x": 3,
+                  "y": 5,
+                  "w": 9,
+                  "h": 5
+                }
+              },
+              "sources": [
+                {
+                  "name": "bytes recv",
+                  "query": "rate(ts(\"telegraf.net.bytes.recv\", source=\"${host}\"))",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                },
+                {
+                  "name": "bytes send",
+                  "query": "rate(ts(\"telegraf.net.bytes.sent*\", source=\"${host}\")) * -1 ",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                }
+              ],
+              "noDefaultEvents": false,
+              "anomalyType": "both"
+            }
+          ],
+          "heightFactor": 100
+        },
+        {
+          "charts": [
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "sparklineDisplayFontSize": "100",
+                "stackType": "zero",
+                "fixedLegendFilterLimit": 5,
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "lineType": "linear",
+                "sparklineValueColorMapApplyTo": "TEXT",
+                "windowing": "full",
+                "sparklineSize": "BACKGROUND",
+                "fixedLegendFilterSort": "TOP",
+                "y1Units": "",
+                "sparklineDisplayValueType": "VALUE",
+                "type": "stacked-area",
+                "y1UnitAutoscaling": false,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": false,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "sparklineDisplayHorizontalPosition": "MIDDLE",
+                "autoColumnTags": false,
+                "numTags": 4,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "Mem % Used",
+              "anomalySampleSize": "8",
+              "units": "%",
+              "summarization": "LAST",
+              "base": 0,
+              "chartAttributes": {
+                "dashboardLayout": {
+                  "x": 0,
+                  "y": 10,
+                  "w": 4,
+                  "h": 5
+                }
+              },
+              "sources": [
+                {
+                  "name": "used",
+                  "query": "ts(\"telegraf.mem.used.percent\", source=\"${host}\")",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false
+                },
+                {
+                  "name": "free",
+                  "query": "100 - ${used}",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false
+                }
+              ],
+              "noDefaultEvents": false,
+              "anomalyType": "both"
+            },
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "stackType": "zero",
+                "fixedLegendFilterLimit": 5,
+                "timeBasedColoring": false,
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "lineType": "linear",
+                "windowing": "full",
+                "fixedLegendFilterSort": "TOP",
+                "y1Units": "",
+                "type": "stacked-area",
+                "y1UnitAutoscaling": false,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": false,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "autoColumnTags": false,
+                "numTags": 4,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "Total CPU Usage (non-idle)",
+              "anomalySampleSize": "8",
+              "units": "%",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "dashboardLayout": {
+                  "x": 4,
+                  "y": 10,
+                  "w": 4,
+                  "h": 5
+                }
+              },
+              "sources": [
+                {
+                  "name": "Total",
+                  "query": "100 - avg(ts(\"telegraf.cpu.usage.idle\", source=\"${host}\" and not cpu=cpu-total), sources)",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                }
+              ],
+              "noDefaultEvents": false,
+              "description": "https://metrics.wavefront.com/dashboard/collectd-host",
+              "anomalyType": "both"
+            },
+            {
+              "anomalySeverity": "medium",
+              "chartSettings": {
+                "y1ScaleSIBy1024": false,
+                "fixedLegendEnabled": false,
+                "fixedLegendFilterField": "CURRENT",
+                "y0ScaleSIBy1024": false,
+                "stackType": "zero",
+                "fixedLegendFilterLimit": 5,
+                "fixedLegendPosition": "RIGHT",
+                "customTags": [],
+                "lineType": "linear",
+                "showHosts": false,
+                "columnTags": "",
+                "windowSize": 5,
+                "windowing": "last",
+                "fixedLegendFilterSort": "TOP",
+                "y1Units": "",
+                "type": "stacked-area",
+                "y1UnitAutoscaling": false,
+                "showLabels": true,
+                "tagMode": "all",
+                "fixedLegendUseRawStats": false,
+                "y0UnitAutoscaling": false,
+                "fixedLegendDisplayStats": [
+                  "CURRENT"
+                ],
+                "autoColumnTags": false,
+                "numTags": 4,
+                "sparklineDisplayColor": null,
+                "sparklineLineColor": null,
+                "sparklineFillColor": null
+              },
+              "displayConfidenceBounds": false,
+              "includeObsoleteMetrics": false,
+              "interpolatePoints": false,
+              "filterOutNonAnomalies": false,
+              "name": "Disk Free vs. Disk Used (Overall) Trend",
+              "anomalySampleSize": "8",
+              "units": "bytes",
+              "summarization": "MEAN",
+              "base": 0,
+              "chartAttributes": {
+                "dashboardLayout": {
+                  "x": 8,
+                  "y": 10,
+                  "w": 4,
+                  "h": 5
+                }
+              },
+              "sources": [
+                {
+                  "name": "free",
+                  "query": "sum(ts(\"telegraf.disk.free\", source=\"${host}\"))",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                },
+                {
+                  "name": "used",
+                  "query": "sum(ts(\"telegraf.disk.used\", source=\"${host}\"))",
+                  "disabled": false,
+                  "secondaryAxis": false,
+                  "querybuilderEnabled": false,
+                  "sourceDescription": ""
+                }
+              ],
+              "noDefaultEvents": false,
+              "anomalyType": "both"
+            }
+          ],
+          "heightFactor": 100
+        }
+      ]
+    }
+  ],
+  "parameterDetails": {
+    "host": {
+      "tagsBlackListRegex": "",
+      "parameterType": "SIMPLE",
+      "tagKey": "",
+      "queryValue": "ts(telegraf.cpu.usage.idle)",
+      "order": 1,
+      "defaultValue": "Label_4",
+      "hideFromView": true,
+      "value": "vpn",
+      "label": "Host",
+      "dynamicFieldType": "SOURCE",
+      "valuesToReadableStrings": {
+        "Label_4": "vpn"
+      }
+    },
+    "license": {
+      "parameterType": "SIMPLE",
+      "order": 2,
+      "defaultValue": "Label",
+      "hideFromView": true,
+      "value": "50",
+      "label": "license",
+      "valuesToReadableStrings": {
+        "Label": "50"
+      }
+    }
+  }
+}
