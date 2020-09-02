@@ -8,7 +8,7 @@ Please refer to the `README` for specific documentation and usage.
 
 ## Reporting Issues
 
-Issues can be reported by using [GitHub Issues](https://github.com/lacework/terraform-provisioning/issues).
+Issues can be reported by using [GitHub Issues](https://github.com/lacework/ops/issues).
 
 ## License and Copyright
 Copyright 2020, Lacework Inc.
