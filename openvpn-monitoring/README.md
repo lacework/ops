@@ -32,6 +32,7 @@ Issues can be reported by using [GitHub Issues](https://github.com/lacework/ops/
 
 ## License and Copyright
 Copyright 2020, Lacework Inc.
+
 ```
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
