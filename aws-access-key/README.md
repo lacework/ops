@@ -33,7 +33,21 @@ The code makes use of standard `boto` syntax for access.
 
 In Lacework-land, we are making use of EC2 Instance Roles for cross-account IAM read access. YMMV.
 
-### Variables
+### Configuration parameters
+#### Basics
+
+A simple shell wrapper, `env_setup.sh`, will help populate 
+
+| Variable                | Type             | Purpose                                                                 |
+|-------------------------|------------------|-------------------------------------------------------------------------|
+| `send_slack`            | Boolean          | Toggles pinging users on slack                                          |
+| `create_jira`           | Boolean          | Toggles creating a Jira issue                                           |
+| `dump_metric_to_console`| Boolean          | Sends metrics to STDOUT in InfluxDB format                              |
+| `disable_key`           | Boolean          | Toggles automaticaly disabling expired AWS IAM keys                     |
+| `expire_age`            | Numeric          | The value used to define an expired key. Defaults to 180 days.          |
+| `jira_server_address`   | Text             | Jira server URL                                                         |
+| `jira_project_key`      | Text             | Jira Project Key                                                        |
+| `jira_project_name`     | Text             | JIra Project Name                                                       |
 
 ### Dependencies
 
