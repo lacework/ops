@@ -75,7 +75,7 @@ You'll find the following directories:
 
 
 ### Dependencies
-The code uses several things where some prior knowledge may be helpful.
+The code uses several things where some prior knowledge may be helpful. Directions are terse on building the container and running it either locally or within Kubernetes (though some hints are provided).
 
 * Docker
 * Telegaf
@@ -102,25 +102,58 @@ The code makes use of standard `boto` syntax for access.
 
 In Lacework-land, we are making use of EC2 Instance Roles for cross-account IAM read access. YMMV.
 
+### Configuring `telegraf.conf`
+You'll need to update the output plugin for your environment and update the exec input plugin. As noted elsewhere, `iam-accesskey-check` is falled with the AWS profile as the single command line argument. 
+The syntax is simliar to:
+
+```
+[[inputs.exec]]
+ commands = [
+   "/opt/keycheck/iam-accesskey-check.py AWS_PROFILE",
+   ]
+```
+
 ### Configuration parameters
 #### Basics
 
-A simple shell wrapper, `env_setup.sh`, will help populate 
+If you run this locally or outside of Kubernetes, you'll want to set these variables in `env_setup.sh` and `source env_setup.sh`.
+
+If you run this in Kubernetes, you'll want to update the ConfigMap with these variables.
 
 | Variable                | Type             | Purpose                                                                 |
 |-------------------------|------------------|-------------------------------------------------------------------------|
 | `send_slack`            | Boolean          | Toggles pinging users on slack                                          |
 | `create_jira`           | Boolean          | Toggles creating a Jira issue                                           |
-| `dump_metric_to_console`| Boolean          | Sends metrics to STDOUT in InfluxDB format                              |
+| `dump_metric_to_console`| Boolean          | Toggles sending metrics to STDOUT in InfluxDB format                    |
 | `disable_key`           | Boolean          | Toggles automaticaly disabling expired AWS IAM keys                     |
 | `expire_age`            | Numeric          | The value used to define an expired key. Defaults to 180 days.          |
 | `jira_server_address`   | Text             | Jira server URL                                                         |
 | `jira_project_key`      | Text             | Jira Project Key                                                        |
 | `jira_project_name`     | Text             | JIra Project Name                                                       |
 
+The code also depends on `credstash` for credential secrets. These are the names of the key in `credstash`:
+
+| `crestash` key                             | Value
+|--------------------------------------------|-------------------------------------------------------------------------|
+| `credstash_aws_profile_name`               | AWS Profile where `credstash` credentials are stored                    |
+| `credstash_keyname_atlassian_api_email`    | Key containing the email associated with your Atlassian API             |
+| `credstash_keyname_atlassian_api_token`    | Key containing Atlassian API token                                      |
+| `credstash_keyname_slack_api_token`        | Key containing Slack API token                                          |
+| `aws_dynamodb_profile_name`                | Key containing AWS Profile where DynamoDB table is.                     |
+
 
 
 ### Building the container
+
+You can build this container with the following:
+
+```
+$ docker build -t lacework/aws-access-key .
+```
+
+### Running in Kubernetes
+
+You can use the files in `k8s-templates` for inspiration and customize for your environment.
 
 
 ## Wavefront
