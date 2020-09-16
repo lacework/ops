@@ -2,26 +2,95 @@
 
 # IAM Access Key Monitoring @ Lacework
 
+## Introduction
+
 See the blog post [Keeping an eye on IAM Keys. No more stale keys!](https://engineering.lacework.net/?p=5601)
 
 At Lacework, we follow many recommended best practices including [regularly rotating AWS credentials](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#rotate-credentials). 
 
 Since it's harder to remind users with programatic AWS access to rotate or change passwords (or not as easy as it is for an interactive login), we automated this.
 
-**Goals:**
+### Goals
 
 * ensure that old or stale keys are disabled
 * notify users in Slack about keys nearing expiration
 * file Jiras against users to rotate keys - work doesn't happen without a Jira *amiright*?
 * send relevant telemetry to our monitoring platform to alert on expiring/expired keys (and track that as it relates to service health)
 
+### How it works
+Lacework uses [Wavefront](https://www.wavefront.com/) as it's observability/monitoring platform and to simplify this code and make it more consumable, the Python code is run from a [Telegraf Exec Input Plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/exec). You can adjust the output plugin to suite your environment.
 
-## The code
+The Python script does the following:
+
+* Scans all IAM Access Keys for an AWS profile (passed in on the command line)
+* Checks age of IAM Access Keys
+* If key is nearing expiration, it files a Jira and notifies the user through Slack
+* If key is expired, disable the key in AWS
+* Outputs to STDOUT InfluxDB line formatted data for Telegraf
+
+The code is smart enough to file only one Jira but will nag the user on Slack at least once every 24 hours.
+
+Because we :heart: our users, Slack notices include directions on how to programatically rotate keys:
+
+> To rotate your key, run the following CLI commands:
+> 
+> ```aws iam create-access-key --user-name Alice```
+> ```aws iam update-access-key --access-key-id <OLD ACCESS KEY> --status Inactive --user-name Alice```
+>
+> For more information visit https://aws.amazon.com/blogs/security/how-to-rotate-access-keys-for-iam-users/
+
+The code uses a DynamoDB table to track state, mostly to avoid spamming users with multiple Jiras and Slack messages. It keeps track of the last time a user was messaged. By default, this uses the table `iam-access-key-alert` and will automaticaly create it if missing.
+
+_Note_: By default, users are only ping'd on Slack if they have not been ping'd in the last 24 hours _and_ the configuration parameter `send_slack` is `True`. Likewise, Jira issues will only be filed if there isn't a prior open Jira _and_ `create_jira` is `True`.
+
+See below for other configuration options.
+
+### Observabilty & Monitoring
+We run this through Telegraf and the output is InfluxDB formatted. You can adjust the output plugin for your environment.
+
+Example output:
+```
+iam,name=dev_afiunel,key=VHXVM,status=disabled,accountAlias=lacework-devtest age=197
+```
+
+
+## Getting Started
+
+Even though the code runs out of Telegraf, it can run standalone. You could easily adapt it to run out of `cron` or even as a scheduled container job and skip the Telegraf telemetry output.
+
+The code uses standard `boto3` conventions. You can specify the AWS profile name anyway that `boto3` expects.
+
+```   
+/opt/keycheck/iam-accesskey-check.py AWS_PROFILE
+```
+
+### The code
 
 You'll find the following directories:
 
 * `aws`: sample "`~/.aws/config`", used for `boto`-based authentication
-* `wavefront`: A Wavefront dashboard, in JSON
+* `wavefront`: a Wavefront dashboard, in JSON
+* `keycheck`: the actual code
+* `k8s-templates`: Kubernetes templates
+
+
+### Dependencies
+The code uses several things where some prior knowledge may be helpful.
+
+* Docker
+* Telegaf
+* AWS IAM roles & permissions
+* AWS DynamoDB
+* Kubernetes
+* Boto
+* [`credstash`](https://github.com/fugue/credstash): used for lightweight, secure credential storage
+
+**API Keys:**
+
+* Atlassian API token (see [here to generate your token](https://confluence.atlassian.com/cloud/api-tokens-938839638.html ))
+* Slack API token. Create a new app and token [here](https://api.slack.com/apps).
+
+These API tokens should be store in `credstash`.
 
 
 ## Running the code
@@ -49,7 +118,7 @@ A simple shell wrapper, `env_setup.sh`, will help populate
 | `jira_project_key`      | Text             | Jira Project Key                                                        |
 | `jira_project_name`     | Text             | JIra Project Name                                                       |
 
-### Dependencies
+
 
 ### Building the container
 
