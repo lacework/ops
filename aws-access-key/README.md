@@ -129,7 +129,6 @@ If you run this in Kubernetes, you'll want to update the ConfigMap with these va
 | `expire_age`            | Numeric          | The value used to define an expired key. Defaults to 180 days.          |
 | `jira_server_address`   | Text             | Jira server URL                                                         |
 | `jira_project_key`      | Text             | Jira Project Key                                                        |
-| `jira_project_name`     | Text             | JIra Project Name                                                       |
 
 The code also depends on `credstash` for credential secrets. These are the names of the key in `credstash`:
 

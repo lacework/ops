@@ -14,7 +14,7 @@ RUN python3 -m pip install -r requirements.txt
 
 COPY . .
 
-RUN /bin/rm /etc/telegraf/telegraf.conf ; /bin/ln -s /opt/telegraf.conf /etc/telegraf/telegraf.conf
+RUN /bin/rm /etc/telegraf/telegraf.conf ; /bin/ln -s /opt/telegraf/telegraf.conf /etc/telegraf/telegraf.conf
 RUN /bin/ln -s /opt/aws ~/.aws
 
 CMD ["/usr/bin/telegraf", "--config", "/opt/telegraf.conf"]
