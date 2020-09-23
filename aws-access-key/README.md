@@ -20,13 +20,19 @@ Since it's harder to remind users with programatic AWS access to rotate or chang
 ### How it works
 Lacework uses [Wavefront](https://www.wavefront.com/) as it's observability/monitoring platform and to simplify this code and make it more consumable, the Python code is run from a [Telegraf Exec Input Plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/exec). You can adjust the output plugin to suite your environment.
 
-The Python script does the following:
+The Python script does the following in sequential order:
 
-* Scans all IAM Access Keys for an AWS profile (passed in on the command line)
-* Checks age of IAM Access Keys
-* If key is nearing expiration, it files a Jira and notifies the user through Slack
-* If key is expired, disable the key in AWS
-* Outputs to STDOUT InfluxDB line formatted data for Telegraf
+* Scans all IAM users for an AWS profile (passed in as an input on the command line)
+* For each IAM user, checks age of all their IAM Access Keys and labels each key as either "ok", "expiring", or "expired"
+* If key is "expiring" or "expired, it files a Jira and notifies the user through Slack
+* If key is "expired", then disable the key in AWS
+* Outputs to STDOUT InfluxDB line formatted data for Telegraf to scrape
+
+_Note_: A key is said to be "expiring" if it is within 15 days of reaching its expiry age.
+
+Fundementally, if a key is labelled as "expired" or "expiring", then the system checks for 2 things:
+- When was the last time we pinged the key's owner on slack telling them to rotate this access key? 
+- Has there already been a jira issue filled for rotating this access key?
 
 The code is smart enough to file only one Jira but will nag the user on Slack at least once every 24 hours.
 
@@ -45,6 +51,10 @@ Here's what a sample slack message looks like:
 The code uses a DynamoDB table to track state, mostly to avoid spamming users with multiple Jiras and Slack messages. It keeps track of the last time a user was messaged. By default, this uses the table `iam-access-key-alert` and will automaticaly create it if missing.
 
 _Note_: By default, users are only ping'd on Slack if they have not been ping'd in the last 24 hours _and_ the configuration parameter `send_slack` is `True`. Likewise, Jira issues will only be filed if there isn't a prior open Jira _and_ `create_jira` is `True`.
+
+The script uses DynamoDB to keep track of the last time we ping'd a user regarding their expiring/expired access key, if a table does not exist, then the code will create a table - so that you don't have to worry about this.
+
+
 
 See below for other configuration options.
 
