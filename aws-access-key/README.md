@@ -59,12 +59,12 @@ We run this through Telegraf and the output is InfluxDB formatted by default. Yo
 
 As shown from the example below, the metrics dumped include the last 5 digits of the access key, the account alias, and the key age. Note that metrics for ALL keys will be dumped into STDOUT, regardless of their status.
 
-Example output:
+Example output (influxDB format):
 ```
 iam,name=dev_afiunel,key=VHXVM,status=disabled,accountAlias=lacework-devtest age=197
 ```
 
-From here, T
+From here, Telegraf scrapes STDOUT and handles pushing these to your monitoring platform with `outputs.<plugin>`
 
 ## Getting Started
 
@@ -198,8 +198,15 @@ $ docker build -t lacework/aws-access-key .
 
 You can use the files in `k8s-templates` for inspiration and customize for your environment.
 
-You will need to fill in the `configmap.yaml` with the configurations above, the template file will have 
+You will need to fill in the `configmap.yaml` with the configurations above, the template file will have all the parameters. Refer to https://kubernetes.io/docs/concepts/configuration/configmap/ for more information.
 
+We decided to mount the `telegraf.conf` and AWS `config` files as kubernetes secrets. Refer to https://kubernetes.io/docs/concepts/configuration/secret/ for more info on this.
+
+The `pod.yaml` handles deploying the pod itself which will host the program, pulling the docker image from the respective docker repo.
+
+For more and better examples refer to https://kubernetes.io/blog/2019/07/23/get-started-with-kubernetes-using-python/ and https://kubernetes.io/docs/concepts/workloads/pods/
+
+When you've build these 3 files, run `kubectl apply -f <this_repo>/k8s-templates` and it will apply all 3 yamls.
 
 ## Wavefront
 We use [Wavefront](https://www.wavefront.com/) as our time-series metrics platform. The sample dashboard should give you ideas for your own dashboard (or you can import directly to Wavefront).
