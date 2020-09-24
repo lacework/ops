@@ -12,23 +12,23 @@ Since it's harder to remind users with programatic AWS access to rotate or chang
 
 ### Goals
 
-* ensure that old or stale keys are disabled
-* notify users in Slack about keys nearing expiration
-* file Jiras against users to rotate keys - work doesn't happen without a Jira *amiright*?
-* send relevant telemetry to our monitoring platform to alert on expiring/expired keys (and track that as it relates to service health)
+* Ensure that old or stale keys are disabled
+* Notify users in Slack about keys nearing expiration
+* File Jiras against users to rotate keys - work doesn't happen without a Jira *amiright*?
+* Send relevant telemetry to our monitoring platform to alert on expiring/expired keys (and track that as it relates to service health)
 
 ### How it works
-Lacework uses [Wavefront](https://www.wavefront.com/) as it's observability/monitoring platform and to simplify this code and make it more consumable, the Python code is run from a [Telegraf Exec Input Plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/exec). You can adjust the output plugin to suite your environment.
+Lacework uses [Wavefront](https://www.wavefront.com/) as it's observability/monitoring platform and to simplify this code and make it more consumable, the Python script is ran from a [Telegraf Exec Input Plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/exec). You can adjust the output plugin to suite your environment.
 
 The Python script does the following in sequential order:
 
 * Scans all IAM users for an AWS profile (passed in as an input on the command line)
 * For each IAM user, checks age of all their IAM Access Keys and labels each key as either "ok", "expiring", or "expired"
-* If key is "expiring" or "expired, it files a Jira and notifies the user through Slack
+* If key is "expiring" or "expired, it files a Jira and notifies the user through Slack (if not done already)
 * If key is "expired", then disable the key in AWS
-* Outputs to STDOUT InfluxDB line formatted data for Telegraf to scrape
+* Outputs to STDOUT InfluxDB line formatted data for Telegraf to scrape - for all keys
 
-_Note_: A key is said to be "expiring" if it is within 15 days of reaching its expiry age.
+_Note_: A key is said to be "expiring" if it is within 15 days of reaching its expiry age. The expiry age is set to 180 days by default, however, this of course can be changed.
 
 Fundementally, if a key is labelled as "expired" or "expiring", then the system checks for 2 things:
 - When was the last time we pinged the key's owner on slack telling them to rotate this access key? 
@@ -40,32 +40,31 @@ Because we :heart: our users, Slack notices include directions on how to program
 
 > To rotate your key, run the following CLI commands:
 > 
-> ```aws iam create-access-key --user-name Alice```
-> ```aws iam update-access-key --access-key-id <OLD ACCESS KEY> --status Inactive --user-name Alice```
+> ```aws iam create-access-key --user-name <user_name>```
+> ```aws iam update-access-key --access-key-id <OLD ACCESS KEY> --status Inactive --user-name <user_name>```
 >
 > For more information visit https://aws.amazon.com/blogs/security/how-to-rotate-access-keys-for-iam-users/
 
 Here's what a sample slack message looks like:
 <img src="https://user-images.githubusercontent.com/55153449/94055879-84f36500-fdab-11ea-9552-0c1d3dd18436.png">
 
-The code uses a DynamoDB table to track state, mostly to avoid spamming users with multiple Jiras and Slack messages. It keeps track of the last time a user was messaged. By default, this uses the table `iam-access-key-alert` and will automaticaly create it if missing.
+The code uses a DynamoDB table to track state, mostly to avoid spamming users with multiple Jiras and Slack messages. It keeps track of the last time a user was messaged on slack by access key. By default, this uses the table `iam-access-key-alert` and will automaticaly create such a table if it does not exist.
 
 _Note_: By default, users are only ping'd on Slack if they have not been ping'd in the last 24 hours _and_ the configuration parameter `send_slack` is `True`. Likewise, Jira issues will only be filed if there isn't a prior open Jira _and_ `create_jira` is `True`.
-
-The script uses DynamoDB to keep track of the last time we ping'd a user regarding their expiring/expired access key, if a table does not exist, then the code will create a table - so that you don't have to worry about this.
-
-
 
 See below for other configuration options.
 
 ### Observabilty & Monitoring
-We run this through Telegraf and the output is InfluxDB formatted. You can adjust the output plugin for your environment.
+We run this through Telegraf and the output is InfluxDB formatted by default. You can adjust the output plugin for your environment.
+
+As shown from the example below, the metrics dumped include the last 5 digits of the access key, the account alias, and the key age. Note that metrics for ALL keys will be dumped into STDOUT, regardless of their status.
 
 Example output:
 ```
 iam,name=dev_afiunel,key=VHXVM,status=disabled,accountAlias=lacework-devtest age=197
 ```
 
+From here, T
 
 ## Getting Started
 
@@ -81,10 +80,23 @@ The code uses standard `boto3` conventions. You can specify the AWS profile name
 
 You'll find the following directories:
 
-* `aws`: sample "`~/.aws/config`", used for `boto`-based authentication
+* `aws`: sample "`~/.aws/config`", used for `boto3`-based authentication
 * `wavefront`: a Wavefront dashboard, in JSON
 * `keycheck`: the actual code
 * `k8s-templates`: Kubernetes templates
+
+### Slack IDs
+
+Within `keycheck` you'll find a `slack_ID_mapping.py` file. You will need to fill this in. Despite Slack having an API which gives you Slack-ID from a user's email, there is no way of obtaining someone's Slack-ID from IAM. The IAM role for a user doesn’t have any metadata associated.
+
+Instructions on how to fill in the slack ID's are in the `slack_ID_mapping.py` file. Here is an example:
+```
+mapping = {
+       "IAM_user_id1":"slack_id1",
+       "IAM_user_id2":"slack_id2",
+       "IAM_user_id3":"slack_id3"
+   }
+```
 
 
 ### Dependencies
@@ -95,16 +107,16 @@ The code uses several things where some prior knowledge may be helpful. Directio
 * AWS IAM roles & permissions
 * AWS DynamoDB
 * Kubernetes
-* Boto
+* Boto3
 * [`credstash`](https://github.com/fugue/credstash): used for lightweight, secure credential storage
 
-**API Keys:**
+**Store these in `credstash`:**
 
-* Atlassian API token (see [here to generate your token](https://confluence.atlassian.com/cloud/api-tokens-938839638.html ))
 * Slack API token. Create a new app and token [here](https://api.slack.com/apps).
+* Atlassian API token (see [here to generate your token](https://confluence.atlassian.com/cloud/api-tokens-938839638.html ))
+* Email associated with the Atlassian API token
 
-These API tokens should be store in `credstash`.
-
+You will deposit the keynames of these into your config (outlined in the configuration parameters)
 
 ## Running the code
 
@@ -115,8 +127,18 @@ The code makes use of standard `boto` syntax for access.
 
 In Lacework-land, we are making use of EC2 Instance Roles for cross-account IAM read access. YMMV.
 
+We use a Kubernetes secrest object to mount the `~/.aws/config` file into the container, refer to the "Running in Kubernetes section bellow"
+
 ### Configuring `telegraf.conf`
-You'll need to update the output plugin for your environment and update the exec input plugin. As noted elsewhere, `iam-accesskey-check` is falled with the AWS profile as the single command line argument. 
+
+Your `telegraf.conf` is responsible for 3 things:
+- Running the script with `inputs.exec`
+- Scraping STDOUT for metrics
+- Sending telemetry to your monitoring platform with `outputs.<output_plugin>`
+
+At Lacework, we use `outputs.wavefront`.You'll need to update the output plugin for your environment and update the exec input plugin. Please refer to the sample `telegraf.conf` in this repo, in addition to these examples: https://github.com/influxdata/telegraf/tree/master/plugins/outputs
+
+As noted elsewhere, `iam-accesskey-check` is falled with the AWS profile as the single command line argument. You will only need to change the "AWS_PROFILE" from the `[[inputs.exec]]` section.
 The syntax is simliar to:
 
 ```
@@ -126,12 +148,20 @@ The syntax is simliar to:
    ]
 ```
 
+For more information on this plugin, refer to https://github.com/influxdata/telegraf/tree/master/plugins/inputs/exec 
+
+By default, our telegraf has a `timeout` of `120s`. This is because for our AWS profile with the largest number of users, it takes approximately 80 seconds for the script to run. Depending on the number of users in your AWS profiles, you may want to increase this.
+
+Telegraf logs are a good place to keep an eye out on the status of the `input` and `output` plugins
+
+To configure the `[agent]` section, and more instruction on how to build a `telegraf.conf`, please refer to https://docs.influxdata.com/telegraf/v1.15/administration/configuration/.
+
 ### Configuration parameters
 #### Basics
 
 If you run this locally or outside of Kubernetes, you'll want to set these variables in `env_setup.sh` and `source env_setup.sh`.
 
-If you run this in Kubernetes, you'll want to update the ConfigMap with these variables.
+If you run this in Kubernetes, you'll want to update the ConfigMap with these variables. We've provided examples in our `k8s-templates` folder
 
 | Variable                | Type             | Purpose                                                                 |
 |-------------------------|------------------|-------------------------------------------------------------------------|
@@ -154,11 +184,11 @@ The code also depends on `credstash` for credential secrets. These are the names
 | `aws_dynamodb_profile_name`                | Key containing AWS Profile where DynamoDB table is.                     |
 
 
-
+Each of these variables needs to be a string (wrap "" around them). Examples: `expire_age="125"`, `send_slack="True"`
 
 ### Building the container
 
-You can build this container with the following:
+You can build this container with the following (make sure you're in the correct dir with this Dockerfile):
 
 ```
 $ docker build -t lacework/aws-access-key .
@@ -167,6 +197,8 @@ $ docker build -t lacework/aws-access-key .
 ### Running in Kubernetes
 
 You can use the files in `k8s-templates` for inspiration and customize for your environment.
+
+You will need to fill in the `configmap.yaml` with the configurations above, the template file will have 
 
 
 ## Wavefront
