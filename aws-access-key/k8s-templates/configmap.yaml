@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycheck-configmap
+data:
+    send_slack: "True"
+    create_jira: "False"
+    dump_metric_to_console: "True"
+    disable_key: "False"
+    expire_age: "180"
+    jira_server_address : "https://example.atlassian.net"
+    jira_project_key: "OPS"
+    credstash_region: "us-west-2"
+    credstash_aws_profile_name: "aws-prod"
+    credstash_keyname_atlassian_api_email: "jira.svc.user"
+    credstash_keyname_atlassian_api_token: "jira.svc.api.keycheck.token"
+    credstash_keyname_slack_api_token: "slack.api.token"
+    aws_dynamodb_profile_name: "aws-devtest"
+    aws_dynamodb_region: "us-west-2"
