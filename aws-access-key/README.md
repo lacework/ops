@@ -50,7 +50,7 @@ We run this through Telegraf and the output is InfluxDB formatted. You can adjus
 
 Example output:
 ```
-iam,name=dev_afiunel,key=VHXVM,status=disabled,accountAlias=lacework-devtest age=197
+iam,name=dev_kramer,key=VHXVM,status=disabled,accountAlias=aws-devtest age=197
 ```
 
 
@@ -111,6 +111,19 @@ The syntax is simliar to:
  commands = [
    "/opt/keycheck/iam-accesskey-check.py AWS_PROFILE",
    ]
+```
+
+### Configuring Slack ID mappings
+Since it's not possible (or hard) to automatically map Slack IDs to IAM usernames, we make this mapping manually.
+
+Update `slack_ID_mapping.py`, following this example:
+
+```
+mapping = {
+       "IAM_user_id1":"slack_id1",
+       "IAM_user_id2":"slack_id2",
+       "IAM_user_id3":"slack_id3"
+   }
 ```
 
 ### Configuration parameters
