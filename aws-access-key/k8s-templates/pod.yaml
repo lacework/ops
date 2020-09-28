@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-access-key-check
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aws-access-key-check
+  template:
+    metadata:
+      labels:
+        app: aws-access-key-check
+    spec:
+      containers:
+      - name: aws-access-key-check-container
+        image: MY_DOCKER_REPO/iam-access-key-alert:latest
+        envFrom:
+          - configMapRef:
+              name: keycheck-configmap
+        volumeMounts:
+        - name: telegraf-secret
+          mountPath: /opt/telegraf
+        - name: aws-config-secret
+          mountPath: /root/.aws
+
+      volumes:
+      - name: telegraf-secret
+        secret:
+          secretName: keycheck-telegraf-secret
+      - name: aws-config-secret
+        secret:
+          secretName: keycheck-aws-secret

@@ -1,0 +1,10 @@
+[profile my-produdction-aws]
+region=us-west-2
+role_arn = arn:aws:iam::YOUR_AWS_ACCT_ID:role/aws-access-key-check-all-role
+credential_source = Ec2InstanceMetadata 
+
+[profile my-dev-aws]
+region=us-west-2
+role_arn = arn:aws:iam::YOUR_AWS_ACCT_ID:role/aws-access-key-check-all-role
+credential_source = Ec2InstanceMetadata 
+
