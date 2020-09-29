@@ -35,6 +35,7 @@ Because we :heart: our users, Slack notices include directions on how to program
 > To rotate your key, run the following CLI commands:
 > 
 > ```aws iam create-access-key --user-name Alice```
+> 
 > ```aws iam update-access-key --access-key-id <OLD ACCESS KEY> --status Inactive --user-name Alice```
 >
 > For more information visit https://aws.amazon.com/blogs/security/how-to-rotate-access-keys-for-iam-users/
