@@ -41,7 +41,7 @@ fi
 
 log_message INFO "Pushing the new container to hub.docker.com with tag $TAG..."
 docker tag $DOCKER_TAG_OPTIONS burhansibailw/$CONTAINER_NAME:latest burhansibailw/$CONTAINER_NAME:$TAG
-bash ./aws-access-key/with_backoff.sh docker push burhansibailw/$CONTAINER_NAME:$TAG -f aws-access-key/Dockerfile
+bash ./aws-access-key/with_backoff.sh docker push burhansibailw/$CONTAINER_NAME:$TAG
 if [ $? -ne 0 ]; then
     log_message ERROR "Failed to push container $CONTAINER_NAME to hub.docker.com"
     exit 1
