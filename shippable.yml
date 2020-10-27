@@ -6,7 +6,6 @@ python:
 branches:
   only:
     - shippable-integration
-    -
 build:
     pre_ci_boot:
        image_name:  burhansibailw/iam-access-key-alert-test
@@ -17,5 +16,5 @@ build:
 
 integrations:
     hub:
-        - integrationName: Docker
-          type: docker
+        - integrationName: docker_integration
+          type: dockerRegistryLogin
