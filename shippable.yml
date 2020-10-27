@@ -9,6 +9,7 @@ branches:
 build:
 
     ci:
+      - chmod +x aws-access-key/build.sh
       - ./aws-access-key/build.sh
 
 integrations:
