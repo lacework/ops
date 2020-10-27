@@ -27,21 +27,21 @@ if [ -z "$TAG" ]; then
 	TAG=${DATE}_${BRANCH}_${FULL_COMMIT}
 fi
 
-CONTAINER_NAME="iam-access-key-alert-test"
+CONTAINER_NAME="iam-access-key-alert"
 
 log_message INFO "Will process the following container: $CONTAINER_NAME"
 log_message INFO "Using container tag $TAG"
 
 log_message INFO "Building container $CONTAINER_NAME ..."
-docker build --force-rm=true -t burhansibailw/$CONTAINER_NAME . -f aws-access-key/Dockerfile
+docker build --force-rm=true -t lacework/$CONTAINER_NAME . -f aws-access-key/Dockerfile
 if [ $? -ne 0 ]; then
     log_message ERROR "Failed to build container $CONTAINER_NAME"
     exit 1
 fi
 
 log_message INFO "Pushing the new container to hub.docker.com with tag $TAG..."
-docker tag $DOCKER_TAG_OPTIONS burhansibailw/$CONTAINER_NAME:latest burhansibailw/$CONTAINER_NAME:$TAG
-bash ./aws-access-key/with_backoff.sh docker push burhansibailw/$CONTAINER_NAME:$TAG
+docker tag $DOCKER_TAG_OPTIONS lacework/$CONTAINER_NAME:latest lacework/$CONTAINER_NAME:$TAG
+bash ./aws-access-key/with_backoff.sh docker push lacework/$CONTAINER_NAME:$TAG
 if [ $? -ne 0 ]; then
     log_message ERROR "Failed to push container $CONTAINER_NAME to hub.docker.com"
     exit 1
