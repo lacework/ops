@@ -1,11 +1,11 @@
 #language: python
-##testpush
+#
 #python:
 #  - 3.0
 #
 #branches:
 #  only:
-#    - shippable-integration
+#    - master
 ##env:
 ##    global:
 ##        - AWS_REGION=us-west-2
