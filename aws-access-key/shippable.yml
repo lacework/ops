@@ -1,30 +1,30 @@
-language: python
-#testpush
-python:
-  - 3.0
-
-branches:
-  only:
-    - shippable-integration
-#env:
-#    global:
-#        - AWS_REGION=us-west-2
-#        - secure: 0HYveUfFxd+XclU/zXrtZ2HvUx4OO768uODgOn9bRgBcD6sXR2TchOJ55gM+tTRvfh6HfdPqG66VuS58ubmVF+GmacNkVBkjNyPfCAkDpHXrc4FxrpGl/EZd6hFGP0bOWbRvv1hkFawUAmjQj0+cjmRsEdvYDNChE6hTFaB+Me8UTOp+phATvSsrMTyL6HWtg3oe+/HbrWFXFMFWmamezf6bxiBDw+FeTedAoKKJUu/cHMWIPpKZ+fk0M1iBmBDhZI3y5nWojVTKH1DoyJN4TbVv2N0sUuD9z7eTSzsGTR5AB7hcnd1Fjvp3cgwv7hGAWWNdOySPX6Mm513SCdpgSA==
-#        - secure: azm1cDjzMXgeqdzxYHvubjkLt22po1SWjSxnaA38neblSMSL2eGHNW2Bk1ARFVfzdWk+IcWBHVIXLsvhzBm6cty0ZuQi4tZ+Ir44K1B1Bye4HfMhqlSnzWp1u8boycvEfcf4801r8YMjLZoWxPOY8k0JuMTs0+M0obPt1enHvFe+h3MC6Ohi4iKJ1z0v6iop4Cw1k2pGV9tX422F02nDqyUeQ2JFr39Ki+/+h3d+8l2c9VMObkp+EKWkgv1sVAZd5+ecOsCfLpRhJLi0rn2+81xbdtQNMfuhFw0DnR+UPh9O1YHS7PJOXGPudQjPas8nrhDMbj78Ba8rOF3NKtDYOw==
-
-build:
-    pre_ci_boot:
-       image_name:  burhansibailw/iam-access-key-alert-test
-       image_tag: latest
-#    ci:
-#        - shippable_retry sudo apt-get update
-#        - apt-get update && apt-get install -y python-pip libpython-dev
-#        - pip install -r requirements.txt
-##        - pytest --junitxml=shippable/testresults/results.xml tests/  # unit tests
-    on_success:
-        - bash build.sh
-
-integrations:
-    hub:
-        - integrationName: Docker
-          type: docker
+#language: python
+##testpush
+#python:
+#  - 3.0
+#
+#branches:
+#  only:
+#    - shippable-integration
+##env:
+##    global:
+##        - AWS_REGION=us-west-2
+##        - secure: 0HYveUfFxd+XclU/zXrtZ2HvUx4OO768uODgOn9bRgBcD6sXR2TchOJ55gM+tTRvfh6HfdPqG66VuS58ubmVF+GmacNkVBkjNyPfCAkDpHXrc4FxrpGl/EZd6hFGP0bOWbRvv1hkFawUAmjQj0+cjmRsEdvYDNChE6hTFaB+Me8UTOp+phATvSsrMTyL6HWtg3oe+/HbrWFXFMFWmamezf6bxiBDw+FeTedAoKKJUu/cHMWIPpKZ+fk0M1iBmBDhZI3y5nWojVTKH1DoyJN4TbVv2N0sUuD9z7eTSzsGTR5AB7hcnd1Fjvp3cgwv7hGAWWNdOySPX6Mm513SCdpgSA==
+##        - secure: azm1cDjzMXgeqdzxYHvubjkLt22po1SWjSxnaA38neblSMSL2eGHNW2Bk1ARFVfzdWk+IcWBHVIXLsvhzBm6cty0ZuQi4tZ+Ir44K1B1Bye4HfMhqlSnzWp1u8boycvEfcf4801r8YMjLZoWxPOY8k0JuMTs0+M0obPt1enHvFe+h3MC6Ohi4iKJ1z0v6iop4Cw1k2pGV9tX422F02nDqyUeQ2JFr39Ki+/+h3d+8l2c9VMObkp+EKWkgv1sVAZd5+ecOsCfLpRhJLi0rn2+81xbdtQNMfuhFw0DnR+UPh9O1YHS7PJOXGPudQjPas8nrhDMbj78Ba8rOF3NKtDYOw==
+#
+#build:
+#    pre_ci_boot:
+#       image_name:  burhansibailw/iam-access-key-alert-test
+#       image_tag: latest
+##    ci:
+##        - shippable_retry sudo apt-get update
+##        - apt-get update && apt-get install -y python-pip libpython-dev
+##        - pip install -r requirements.txt
+###        - pytest --junitxml=shippable/testresults/results.xml tests/  # unit tests
+#    on_success:
+#        - bash build.sh
+#
+#integrations:
+#    hub:
+#        - integrationName: Docker
+#          type: docker
