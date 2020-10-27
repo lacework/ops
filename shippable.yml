@@ -1,0 +1,21 @@
+language: python
+
+python:
+  - 3.0
+
+branches:
+  only:
+    - shippable-integration
+    -
+build:
+    pre_ci_boot:
+       image_name:  burhansibailw/iam-access-key-alert-test
+       image_tag: latest
+    ci:
+      - ./aws-access-key/build.sh
+      - ./aws-access-key/tag_image.sh
+
+integrations:
+    hub:
+        - integrationName: Docker
+          type: docker
