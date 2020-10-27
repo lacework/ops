@@ -1,0 +1,18 @@
+language: python
+
+python:
+  - 3.0
+
+branches:
+  only:
+    - master
+build:
+
+    ci:
+      - chmod +x aws-access-key/build.sh
+      - ./aws-access-key/build.sh
+
+integrations:
+    hub:
+        - integrationName: docker_integration
+          type: dockerRegistryLogin

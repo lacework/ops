@@ -8,7 +8,7 @@ RUN wget -qO- https://repos.influxdata.com/influxdb.key |  apt-key add -
 RUN echo "deb https://repos.influxdata.com/ubuntu bionic stable" | tee /etc/apt/sources.list.d/influxdb.list
 RUN apt-get update && apt-get -y install telegraf python3 python3-pip
 
-COPY requirements.txt .
+COPY aws-access-key/requirements.txt .
 
 RUN python3 -m pip install -r requirements.txt
 
