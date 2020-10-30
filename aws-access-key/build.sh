@@ -3,7 +3,6 @@
 # The script should be used to build the `$CONTAINER_NAME`
 # container and push it to hub.docker.com
 #
-#test
 
 log_message () {
     typeset SEVERITY=$1
