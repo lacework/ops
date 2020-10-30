@@ -4,6 +4,7 @@
 # container and push it to hub.docker.com
 #
 
+
 log_message () {
     typeset SEVERITY=$1
     typeset MESSAGE="$2"
