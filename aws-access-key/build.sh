@@ -24,7 +24,7 @@ if [ -z "$DATE" -o -z "$BRANCH" -o -z "$FULL_COMMIT" ]; then
 fi
 
 if [ -z "$TAG" ]; then
-	TAG=${DATE}_${BRANCH}_${FULL_COMMIT}
+	TAG="latest"
 fi
 
 CONTAINER_NAME="iam-access-key-alert"
