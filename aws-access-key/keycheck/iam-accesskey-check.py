@@ -136,6 +136,10 @@ For more information visit aws.amazon.com/blogs/security/how-to-rotate-access-ke
         # for the case in which the AWS access key is expired
         elif key_age >= config["expire_age"]:
             payload = {
+            "text":"Your AWS Access Key with ID ending in ******{}, in `{}` is {} day(s) old. It expired on {}. For Account Alias `{}` \n {} \n {}".format(
+                key_id[-5:], user_name, key_age, expiry_date, self.accountAlias, self.key_rotation_message(user_name, key_id), self.jira_ticket_url),
+            'as_user':"true",
+            "channel": mapping[user_name]
                 "text": "Your AWS Access Key with ID ending in ******{}, in `{}` is {} day(s) old. It will be expired "
                         "as of {}. For Account Alias `{}` \n {} \n {}".format(key_id[-5:], user_name, key_age,
                                                                               expiry_date, self.accountAlias,
@@ -148,6 +152,10 @@ For more information visit aws.amazon.com/blogs/security/how-to-rotate-access-ke
         # for the case which the keys are 15 days away from expiring
         else:
             payload = {
+            "text":"Your AWS Access Key with ID ending in ******{}, in `{}` is {} day(s) old. It will be expired as of {}. For Account Alias `{}` \n {} \n {}".format(
+                key_id[-5:], user_name, key_age, expiry_date, self.accountAlias, self.key_rotation_message(user_name, key_id), self.jira_ticket_url),
+            'as_user':"true",
+            "channel": mapping[user_name]
                 "text": "Your AWS Access Key with ID ending in ******{}, in `{}` is {} day(s) old. It will be expired "
                         "as of {}. For Account Alias `{}` \n {}".format(key_id[-5:], user_name, key_age, expiry_date,
                                                                         self.accountAlias, self.jira_ticket_url),
